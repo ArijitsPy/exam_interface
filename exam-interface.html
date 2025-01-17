@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Exam Interface</title>
   <style>
+    /* Original styles remain the same */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -13,7 +14,6 @@
       overflow: hidden;
     }
     
-    /* Add new styles for candidate info */
     .candidate-info {
       background-color: white;
       padding: 15px;
@@ -56,11 +56,13 @@
       background-color: #f5f5f5;
       position: relative;
     }
+    
     .pdf-preview iframe {
       width: 100%;
       height: 100%;
       border: none;
     }
+    
     .right-panel-container {
       width: 320px;
       display: flex;
@@ -70,6 +72,7 @@
       border-left: 1px solid #ddd;
       background-color: #f9f9f9;
     }
+    
     .right-panel {
       flex: 1;
       padding: 20px;
@@ -105,9 +108,11 @@
       text-align: center;
       margin-right: 10px;
     }
+    
     .timer.warning {
       animation: blink 1s infinite;
     }
+    
     @keyframes blink {
       50% { opacity: 0.5; }
     }
@@ -119,11 +124,13 @@
       border-radius: 8px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
+    
     .status-summary div {
       display: flex;
       align-items: center;
       margin: 8px 0;
     }
+    
     .status-summary div span {
       display: inline-block;
       width: 24px;
@@ -131,21 +138,13 @@
       margin-right: 12px;
       border-radius: 4px;
     }
-    .status-summary .not-visited span {
-      background-color: #e0e0e0;
-    }
-    .status-summary .not-answered span {
-      background-color: #f13c33;
-    }
-    .status-summary .answered span {
-      background-color: #4caf50;
-    }
-    .status-summary .marked-review span {
-      background-color: #2196f3;
-    }
-    .status-summary .saved-review span {
-      background-color: #ffd700;
-    }
+    
+    .status-summary .not-visited span { background-color: #e0e0e0; }
+    .status-summary .not-answered span { background-color: #f13c33; }
+    .status-summary .answered span { background-color: #4caf50; }
+    .status-summary .marked-review span { background-color: #2196f3; }
+    .status-summary .saved-review span { background-color: #ffd700; }
+    
     .question-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
@@ -155,6 +154,7 @@
       border-radius: 8px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
+    
     .question-grid button {
       aspect-ratio: 1;
       text-align: center;
@@ -165,33 +165,65 @@
       font-weight: bold;
       transition: all 0.2s ease;
     }
+    
     .question-grid button:hover {
       transform: scale(1.05);
     }
+    
     .question-grid button.current {
       border: 2px solid #000;
     }
-    .options {
-      margin: 20px 0;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 15px;
+    
+    .question-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
     }
+
+    .question-type-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .question-type-button {
+      padding: 8px 16px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      cursor: pointer;
+      background-color: #f5f5f5;
+    }
+
+    .question-type-button.active {
+      background-color: #2196f3;
+      color: white;
+      border-color: #1976d2;
+    }
+
+    .options {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
     .options label {
       display: flex;
       align-items: center;
-      padding: 10px;
-      background-color: #f5f5f5;
-      border-radius: 6px;
+      padding: 8px 12px;
+      border-radius: 4px;
       cursor: pointer;
       transition: background-color 0.2s;
     }
+
     .options label:hover {
       background-color: #e0e0e0;
     }
-    .options input[type="radio"] {
+    
+    .options input[type="radio"],
+    .options input[type="checkbox"] {
       margin-right: 10px;
     }
+    
     .action-buttons {
       display: flex;
       flex-wrap: wrap;
@@ -199,6 +231,7 @@
       justify-content: center;
       margin: 20px 0;
     }
+    
     .action-buttons button {
       border-radius: 25px;
       padding: 12px 24px;
@@ -207,26 +240,17 @@
       border: none;
       transition: all 0.2s;
     }
+    
     .action-buttons button:hover {
       transform: translateY(-2px);
       box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
-    .save-next {
-      background-color: #4CAF50;
-      color: white;
-    }
-    .clear {
-      background-color: #e0e0e0;
-      color: black;
-    }
-    .save-review {
-      background-color: #FFEB3B;
-      color: black;
-    }
-    .mark-review-next {
-      background-color: #2196F3;
-      color: white;
-    }
+    
+    .save-next { background-color: #4CAF50; color: white; }
+    .clear { background-color: #e0e0e0; color: black; }
+    .save-review { background-color: #FFEB3B; color: black; }
+    .mark-review-next { background-color: #2196F3; color: white; }
+    
     .submit-button {
       background-color: #FF5722;
       color: white;
@@ -239,11 +263,13 @@
       border: none;
       transition: all 0.2s;
     }
+    
     .submit-button:hover {
       background-color: #f4511e;
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
+    
     .bottom-panel {
       padding: 15px;
       display: flex;
@@ -252,6 +278,7 @@
       background-color: #f5f5f5;
       border-top: 1px solid #ddd;
     }
+    
     #selectedQuestion {
       font-size: 1.2rem;
       font-weight: bold;
@@ -262,36 +289,15 @@
       border-radius: 6px;
     }
     
-    /* Question button styles */
-    .question-grid button.answered {
-      background-color: #4caf50; /* Green for answered */
-      color: white;
-    }
-
-    .question-grid button.not-answered {
-      background-color: #f44336; /* Red for unanswered */
-      color: white;
-    }
-
-    .question-grid button.not-visited {
-      background-color: #e0e0e0; /* Gray for not visited */
-      color: black;
-    }
-
-    .question-grid button.marked-review {
-      background-color: #2196f3; /* Blue for marked for review */
-      color: white;
-    }
-
-    .question-grid button.saved-review {
-      background-color: #ffeb3b; /* Yellow for saved for review */
-      color: black;
-    }
+    .question-grid button.answered { background-color: #4caf50; color: white; }
+    .question-grid button.not-answered { background-color: #f44336; color: white; }
+    .question-grid button.not-visited { background-color: #e0e0e0; color: black; }
+    .question-grid button.marked-review { background-color: #2196f3; color: white; }
+    .question-grid button.saved-review { background-color: #ffeb3b; color: black; }
   </style>
 </head>
 <body>
   <div class="main-content">
-    
     <div class="pdf-section">
       <input type="file" id="uploadPdf" accept="application/pdf" style="margin-bottom: 10px;">
       <div class="pdf-preview" id="pdfPreview">
@@ -303,11 +309,17 @@
       <h2>Answer Sheet</h2>
       <p id="selectedQuestion">No question selected</p>
       
-      <div class="options">
-        <label><input type="radio" name="option" value="a"> Option A</label>
-        <label><input type="radio" name="option" value="b"> Option B</label>
-        <label><input type="radio" name="option" value="c"> Option C</label>
-        <label><input type="radio" name="option" value="d"> Option D</label>
+      <div class="question-controls">
+        <div class="question-type-buttons">
+          <button class="question-type-button active" id="mcqButton">MCQ</button>
+          <button class="question-type-button" id="msqButton">MSQ</button>
+        </div>
+        <div class="options" id="options">
+          <label><input type="radio" name="option" value="a"> A </label>
+          <label><input type="radio" name="option" value="b"> B </label>
+          <label><input type="radio" name="option" value="c"> C </label>
+          <label><input type="radio" name="option" value="d"> D </label>
+        </div>
       </div>
 
       <div class="action-buttons">
@@ -323,8 +335,7 @@
 
   <div class="right-panel-container">
     <div class="right-panel">
-    
-     <div class="timer-section">
+      <div class="timer-section">
         <div class="timer" id="timer">Time Remaining: 03:00:00</div>
         <div class="timer-controls">
           <button id="startTimer">Start</button>
@@ -352,43 +363,67 @@
     </div>
   </div>
 
-
   <script>
     class ExamInterface {
       constructor() {
-        // Check if config exists
+        // Check for existing config
         const config = JSON.parse(localStorage.getItem('examConfig'));
         if (!config) {
-          window.location.href = 'index.html'; // Redirect to setup if no config
+          window.location.href = 'index.html';
           return;
         }
-      
-        // Initialize with config values
+
+        // Initialize properties
+        this.initializeProperties(config);
+        this.initializeInterface();
+        this.attachEventListeners();
+        this.updateQuestionGrid();
+        this.updateTimer();
+      }
+
+      initializeProperties(config) {
         this.totalQuestions = config.questionCount;
         this.timeNeeded = config.timeNeeded;
-        this.timeRemaining = this.timeNeeded * 60; // Convert minutes to seconds
+        this.timeRemaining = this.timeNeeded * 60;
         this.allowCustomEdit = config.allowCustomEdit;
         this.candidateInfo = {
           name: config.candidateName,
           exam: config.examName,
           subject: config.subject
         };
-        
         this.currentQuestion = null;
         this.timerInterval = null;
         this.isPaused = true;
         this.answers = new Map();
-        
-        this.initializeInterface();
-        this.attachEventListeners();
-        this.updateQuestionGrid();
-        this.updateTimer();
+        this.questionType = 'mcq';
+        this.questionStartTime = null;
       }
-      
+
       initializeInterface() {
-      	
-      	this.initializeElements();
-        // Create and insert candidate info section
+        this.initializeElements();
+        this.createCandidateInfo();
+        
+        // Hide edit controls if not allowed
+        if (!this.allowCustomEdit) {
+          document.getElementById('editTimer').style.display = 'none';
+          document.getElementById('addQuestion').style.display = 'none';
+        }
+      }
+
+      initializeElements() {
+        this.elements = {
+          timer: document.getElementById('timer'),
+          questionGrid: document.getElementById('questionGrid'),
+          selectedQuestion: document.getElementById('selectedQuestion'),
+          options: document.getElementById('options'),
+          pdfPreview: document.getElementById('pdfPreview'),
+          uploadPdf: document.getElementById('uploadPdf'),
+          mcqButton: document.getElementById('mcqButton'),
+          msqButton: document.getElementById('msqButton')
+        };
+      }
+
+      createCandidateInfo() {
         const infoHtml = `
           <div class="candidate-info">
             <div class="info-item">
@@ -405,32 +440,7 @@
             </div>
           </div>
         `;
-        
         document.querySelector('.main-content').insertAdjacentHTML('afterbegin', infoHtml);
-        
-        // Move timer to right panel
-        const timerSection = document.querySelector('.timer-section');
-  if (timerSection) {
-    document.querySelector('.right-panel').insertAdjacentElement('afterbegin', timerSection);
-  }
-        
-        // Disable edit controls if not allowed
-        if (!this.allowCustomEdit) {
-          document.getElementById('editTimer').style.display = 'none';
-          document.getElementById('addQuestion').style.display = 'none';
-        }
-        
-      }
-      
-      initializeElements() {
-        this.elements = {
-          timer: document.getElementById('timer'),
-          questionGrid: document.getElementById('questionGrid'),
-          selectedQuestion: document.getElementById('selectedQuestion'),
-          options: document.querySelectorAll('input[name="option"]'),
-          pdfPreview: document.getElementById('pdfPreview'),
-          uploadPdf: document.getElementById('uploadPdf')
-        };
       }
 
       attachEventListeners() {
@@ -448,6 +458,10 @@
         document.getElementById('submitExam').addEventListener('click', () => this.submitExam());
         document.getElementById('addQuestion').addEventListener('click', () => this.addQuestion());
 
+        // Question type controls
+        this.elements.mcqButton.addEventListener('click', () => this.setQuestionType('mcq'));
+        this.elements.msqButton.addEventListener('click', () => this.setQuestionType('msq'));
+
         // PDF upload
         this.elements.uploadPdf.addEventListener('change', (event) => this.handlePdfUpload(event));
       }
@@ -457,9 +471,8 @@
         const minutes = Math.floor((this.timeRemaining % 3600) / 60);
         const seconds = this.timeRemaining % 60;
         
-        this.elements.timer.textContent = `Time Remaining: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        this.elements.timer.textContent = `Time Remaining: ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         
-        // Add warning class when less than 5 minutes remaining
         if (this.timeRemaining <= 300) {
           this.elements.timer.classList.add('warning');
         }
@@ -486,12 +499,13 @@
 
       resetTimer() {
         this.pauseTimer();
-        this.timeRemaining = this.timeNeeded * 60; // Use configured time
+        this.timeRemaining = this.timeNeeded * 60;
         this.updateTimer();
       }
 
       editTimer() {
-        if (!this.allowCustomEdit) return; // Add check for edit permission
+        if (!this.allowCustomEdit) return;
+        
         this.pauseTimer();
         const newTime = prompt("Enter time in seconds:", this.timeRemaining);
         if (newTime && !isNaN(newTime) && newTime > 0) {
@@ -500,36 +514,58 @@
         }
       }
 
-      updateQuestionGrid() {
-	  this.elements.questionGrid.innerHTML = '';
-	  for (let i = 1; i <= this.totalQuestions; i++) {
-	    const button = document.createElement('button');
-	    button.textContent = i;
-	    button.addEventListener('click', () => this.selectQuestion(i, button));
-	    
-	    // Set initial state
-	    if (this.answers.has(i)) {
-	      const answer = this.answers.get(i);
-	      button.classList.add(answer.status);
-	    } else {
-	      button.classList.add('not-visited');
-	    }
-	    
-	    this.elements.questionGrid.appendChild(button);
-	  }
-	}
+      setQuestionType(type) {
+        this.questionType = type;
+        
+        // Update button styles
+        this.elements.mcqButton.classList.remove('active');
+        this.elements.msqButton.classList.remove('active');
+        document.getElementById(`${type}Button`).classList.add('active');
+        
+        // Update options
+        this.updateOptionsForType(type);
+      }
 
+      updateOptionsForType(type) {
+        const options = ['a', 'b', 'c', 'd'];
+        const inputType = type === 'mcq' ? 'radio' : 'checkbox';
+        
+        // Clear existing options
+        this.elements.options.innerHTML = '';
+        
+        // Create new options with correct input type
+        options.forEach(value => {
+          const label = document.createElement('label');
+          const input = document.createElement('input');
+          input.type = inputType;
+          input.name = type === 'mcq' ? 'option' : `option-${value}`;
+          input.value = value;
+          
+          label.appendChild(input);
+          label.appendChild(document.createTextNode(` ${value.toUpperCase()} `));
+          this.elements.options.appendChild(label);
+        });
+
+        // Restore any saved answers for current question
+        if (this.currentQuestion && this.answers.has(this.currentQuestion)) {
+          const answer = this.answers.get(this.currentQuestion);
+          const inputs = this.elements.options.querySelectorAll('input');
+          inputs.forEach(input => {
+            input.checked = answer.value.includes(input.value);
+          });
+        }
+      }
 
       selectQuestion(questionNumber, button) {
-        // Remove current selection
+        // Update current selection
         const currentButton = this.elements.questionGrid.querySelector('.current');
         if (currentButton) {
           currentButton.classList.remove('current');
         }
-	
-	// Store the start time of the question
-        this.questionStartTime = new Date(); 
-	
+
+        // Store start time for new question
+        this.questionStartTime = new Date();
+        
         // Update current question
         this.currentQuestion = questionNumber;
         button.classList.add('current');
@@ -537,61 +573,20 @@
         // Update question display
         this.elements.selectedQuestion.textContent = `Question ${questionNumber}`;
         
-        // Clear radio buttons
-        this.elements.options.forEach(option => option.checked = false);
-        
-        // Load saved answer if exists
-        if (this.answers.has(questionNumber)) {
-          const answer = this.answers.get(questionNumber);
-          const option = Array.from(this.elements.options).find(opt => opt.value === answer.value);
-          if (option) {
-            option.checked = true;
-          }
-        }
-
         // Update status if not visited
         if (button.classList.contains('not-visited')) {
           button.classList.remove('not-visited');
           button.classList.add('not-answered');
         }
-      }
 
-      saveAndNext() {
-        if (!this.currentQuestion) {
-          alert('Please select a question first');
-          return;
-        }
-
-        const selectedOption = Array.from(this.elements.options).find(opt => opt.checked);
-        if (!selectedOption) {
-          alert('Please select an answer');
-          return;
-        }
-
-        // Save the answer
-        this.answers.set(this.currentQuestion, {
-          value: selectedOption.value,
-          status: 'answered'
-        });
-        
-        // Update the answer with time spent
-        const now = new Date();
-        this.answers.set(this.currentQuestion, {
-            value: selectedOption.value,
-            status: 'answered',
-            timeSpent: now - this.questionStartTime 
-        });
-        
-        // Update question button status
-        const currentButton = this.elements.questionGrid.querySelector('.current');
-        currentButton.classList.remove('not-answered', 'not-visited', 'marked-review', 'saved-review');
-        currentButton.classList.add('answered');
-
-        // Move to next question
-        const nextQuestion = this.currentQuestion < this.totalQuestions ? this.currentQuestion + 1 : null;
-        if (nextQuestion) {
-          const nextButton = this.elements.questionGrid.children[nextQuestion - 1];
-          this.selectQuestion(nextQuestion, nextButton);
+        // Restore saved answer if exists
+        const savedAnswer = this.answers.get(questionNumber);
+        this.updateOptionsForType(this.questionType);
+        if (savedAnswer) {
+          const inputs = this.elements.options.querySelectorAll('input');
+          inputs.forEach(input => {
+            input.checked = savedAnswer.value.includes(input.value);
+          });
         }
       }
 
@@ -601,47 +596,106 @@
           return;
         }
 
-        // Clear radio buttons
-        this.elements.options.forEach(option => option.checked = false);
+        // Clear all selected options
+        const inputs = this.elements.options.querySelectorAll('input');
+        inputs.forEach(input => input.checked = false);
 
-        // Clear saved answer
-        this.answers.delete(this.currentQuestion);
-
-        // Update button status
+        // Update question status
         const currentButton = this.elements.questionGrid.querySelector('.current');
-        currentButton.classList.remove('answered', 'marked-review', 'saved-review');
+        currentButton.classList.remove('answered', 'saved-review');
         currentButton.classList.add('not-answered');
+
+        // Remove from answers map
+        this.answers.delete(this.currentQuestion);
       }
 
-      saveAndMarkForReview() {
+      updateQuestionGrid() {
+        this.elements.questionGrid.innerHTML = '';
+        for (let i = 1; i <= this.totalQuestions; i++) {
+          const button = document.createElement('button');
+          button.textContent = i;
+          button.addEventListener('click', () => this.selectQuestion(i, button));
+          
+          // Set initial state
+          if (this.answers.has(i)) {
+            const answer = this.answers.get(i);
+            button.classList.add(answer.status);
+          } else {
+            button.classList.add('not-visited');
+          }
+          
+          this.elements.questionGrid.appendChild(button);
+        }
+      }
+
+      saveAndNext() {
         if (!this.currentQuestion) {
           alert('Please select a question first');
           return;
         }
 
-        const selectedOption = Array.from(this.elements.options).find(opt => opt.checked);
-        if (!selectedOption) {
+        const selectedOptions = Array.from(this.elements.options.querySelectorAll('input'))
+          .filter(input => input.checked)
+          .map(input => input.value);
+
+        if (selectedOptions.length === 0) {
           alert('Please select an answer');
           return;
         }
-        
-        // Update the answer with time spent
-        const now = new Date();
+
+        // Calculate time spent
+        const timeSpent = new Date() - this.questionStartTime;
+
+        // Save answer with metadata
         this.answers.set(this.currentQuestion, {
-            value: selectedOption.value,
-            status: 'saved-review',
-            timeSpent: now - this.questionStartTime
-        });
-        
-        // Save the answer with review status
-        this.answers.set(this.currentQuestion, {
-          value: selectedOption.value,
-          status: 'saved-review'
+          value: selectedOptions,
+          status: 'answered',
+          timeSpent: timeSpent
         });
 
         // Update button status
         const currentButton = this.elements.questionGrid.querySelector('.current');
-        currentButton.classList.remove('not-answered', 'not-visited', 'marked-review', 'answered');
+        currentButton.classList.remove('not-answered', 'not-visited', 'marked-review', 'saved-review');
+        currentButton.classList.add('answered');
+
+        // Move to next question
+        const nextQuestion = this.currentQuestion < this.totalQuestions ? this.currentQuestion + 1 : null;
+        if (nextQuestion) {
+          const nextButton = this.elements.questionGrid.children[nextQuestion - 1];
+          this.selectQuestion(nextQuestion, nextButton);
+        } else {
+          alert('You have reached the last question');
+        }
+      }
+
+saveAndMarkForReview() {
+        if (!this.currentQuestion) {
+          alert('Please select a question first');
+          return;
+        }
+
+        const selectedOptions = Array.from(this.elements.options.querySelectorAll('input'))
+          .filter(input => input.checked)
+          .map(input => input.value);
+
+        if (selectedOptions.length === 0) {
+          alert('Please select an answer before marking for review');
+          return;
+        }
+
+        // Calculate time spent
+        const timeSpent = new Date() - this.questionStartTime;
+
+        // Save answer with review status
+        this.answers.set(this.currentQuestion, {
+          value: selectedOptions,
+          status: 'saved-review',
+          timeSpent: timeSpent
+        });
+
+        // Update button status
+        const currentButton = this.elements.questionGrid.querySelector('.current');
+        currentButton.classList.remove('not-answered', 'not-visited', 'answered', 'marked-review');
         currentButton.classList.add('saved-review');
 
         // Move to next question
@@ -657,19 +711,15 @@
           alert('Please select a question first');
           return;
         }
-	
-	// Update the answer with time spent
-        const now = new Date();
+
+        // Calculate time spent even if no answer selected
+        const timeSpent = new Date() - this.questionStartTime;
+
+        // Mark for review without requiring an answer
         this.answers.set(this.currentQuestion, {
-            value: null,
-            status: 'marked-review',
-            timeSpent: now - this.questionStartTime
-        });
-	
-        // Mark for review without saving answer
-        this.answers.set(this.currentQuestion, {
-          value: null,
-          status: 'marked-review'
+          value: [],
+          status: 'marked-review',
+          timeSpent: timeSpent
         });
 
         // Update button status
@@ -685,113 +735,196 @@
         }
       }
 
-      submitExam() {
-        // Check for unanswered questions
-        const unanswered = [];
+      generateSubmissionSummary() {
+        const summary = {
+          answeredCount: 0,
+          notAnsweredCount: 0,
+          markedReviewCount: 0,
+          savedReviewCount: 0,
+          notVisitedCount: 0
+        };
+
         for (let i = 1; i <= this.totalQuestions; i++) {
           const answer = this.answers.get(i);
-          if (!answer || !answer.value) {
-            unanswered.push(i);
+          if (!answer) {
+            summary.notVisitedCount++;
+          } else {
+            switch (answer.status) {
+              case 'answered':
+                summary.answeredCount++;
+                break;
+              case 'marked-review':
+                summary.markedReviewCount++;
+                break;
+              case 'saved-review':
+                summary.savedReviewCount++;
+                break;
+              default:
+                summary.notAnsweredCount++;
+            }
           }
         }
 
-        if (unanswered.length > 0) {
-          const confirm = window.confirm(
-            `You have ${unanswered.length} unanswered questions (${unanswered.join(', ')}). Do you still want to submit?`
-          );
-          if (!confirm) return;
+        return summary;
+      }
+
+      submitExam() {
+        const summary = this.generateSubmissionSummary();
+        const unansweredTotal = summary.notAnsweredCount + summary.notVisitedCount + 
+                              summary.markedReviewCount;
+
+        if (unansweredTotal > 0) {
+          const confirmMessage = `
+            Summary before submission:
+            - Answered: ${summary.answeredCount}
+            - Saved & Marked for Review: ${summary.savedReviewCount}
+            - Not Answered/Not Visited: ${unansweredTotal}
+
+            Are you sure you want to submit the exam?
+          `;
+          
+          if (!confirm(confirmMessage)) {
+            return;
+          }
         }
 
         // Stop timer
         this.pauseTimer();
         
-        // Get current date and time
-    	const now = new Date();
-    	const endDate = now.toISOString(); 
-    	const startDate = new Date(now.getTime() - ((this.timeNeeded * 60) - this.timeRemaining) * 1000).toISOString();
+        // Calculate exam duration and timestamps
+        const endDate = new Date();
+        const totalDuration = (this.timeNeeded * 60) - this.timeRemaining;
+        const startDate = new Date(endDate.getTime() - (totalDuration * 1000));
 
         // Prepare submission data
         const submissionData = {
-          candidateName: this.candidateInfo.name,
-          examName: this.candidateInfo.exam,
-          subject: this.candidateInfo.subject,
-          startDate: startDate, // Add start date
-          endDate: endDate, // Add end date
-          answers: Array.from(this.answers.entries()).map(([question, answer]) => {
-                // Calculate time spent on each question 
-                const questionTime = answer.timeSpent || 0; // Use 0 if timeSpent is undefined
-                return {
-                    question,
-                    answer: answer.value,
-                    status: answer.status,
-                    timeSpent: questionTime
-                };
-            }),
-            timeSpent: (this.timeNeeded * 60) - this.timeRemaining
+          candidateInfo: this.candidateInfo,
+          examMetadata: {
+            startDate: startDate.toISOString(),
+            endDate: endDate.toISOString(),
+            totalDuration,
+            timeRemaining: this.timeRemaining
+          },
+          answers: Array.from(this.answers.entries()).map(([questionNumber, answer]) => ({
+            questionNumber,
+            selectedOptions: answer.value,
+            status: answer.status,
+            timeSpent: answer.timeSpent || 0
+          })),
+          summary
         };
-	
-	  // Generate Excel data
-	  const excelData = [
-	      ["Candidate Name", this.candidateInfo.name],
-              ["Exam Name", this.candidateInfo.exam],
-              ["Subject", this.candidateInfo.subject],
-              ["Start Date", startDate],
-              ["End Date", endDate],
-              ["", ""], // Empty row for better readability
-              ["Question", "Answer", "Status", "Time Spent (seconds)"] 
-    	  ];
-	  submissionData.answers.forEach(answer => {
-	    excelData.push([answer.question, answer.answer, answer.status, answer.timeSpent]);
-	  });
 
-	  // Create a temporary CSV string
-	  const csv = excelData.map(row => row.join(",")).join("\n");
+        // Generate CSV data
+        this.generateAndDownloadCSV(submissionData);
 
-	  // Create a download link for the CSV file
-	  const downloadLink = document.createElement("a");
-	  downloadLink.href = `data:text/csv;charset=utf-8,${encodeURIComponent(csv)}`;
-	  downloadLink.download = "Response_Sheet.csv";
-	  document.body.appendChild(downloadLink);
-	  downloadLink.click();
-	  document.body.removeChild(downloadLink);
-	  
-        // Log submission data (in real app, this would be sent to a server)
+        // In a real application, send data to server
         console.log('Exam submitted:', submissionData);
-        alert('Exam submitted successfully!');
 
-        // Disable all controls
-        this.disableControls();
+        // Disable interface
+        this.disableInterface();
+        
+        alert('Exam submitted successfully! Your response sheet has been downloaded.');
       }
 
-      disableControls() {
-        // Disable all interactive elements
-        this.elements.options.forEach(option => option.disabled = true);
-        document.querySelectorAll('button').forEach(button => button.disabled = true);
-        this.elements.uploadPdf.disabled = true;
-      }
+      generateAndDownloadCSV(submissionData) {
+        const csvRows = [
+          ['Exam Response Sheet'],
+          [''],
+          ['Candidate Information'],
+          ['Name', submissionData.candidateInfo.name],
+          ['Exam', submissionData.candidateInfo.exam],
+          ['Subject', submissionData.candidateInfo.subject],
+          [''],
+          ['Exam Details'],
+          ['Start Time', submissionData.examMetadata.startDate],
+          ['End Time', submissionData.examMetadata.endDate],
+          ['Total Duration (seconds)', submissionData.examMetadata.totalDuration],
+          [''],
+          ['Response Summary'],
+          ['Total Questions', this.totalQuestions],
+          ['Answered', submissionData.summary.answeredCount],
+          ['Saved & Marked for Review', submissionData.summary.savedReviewCount],
+          ['Marked for Review', submissionData.summary.markedReviewCount],
+          ['Not Answered', submissionData.summary.notAnsweredCount],
+          ['Not Visited', submissionData.summary.notVisitedCount],
+          [''],
+          ['Detailed Responses'],
+          ['Question Number', 'Selected Options', 'Status', 'Time Spent (ms)']
+        ];
 
-      addQuestion() {
-        if (!this.allowCustomEdit) return; // Add check for edit permission
-        this.totalQuestions++;
-        this.updateQuestionGrid();
+        // Add individual question responses
+        submissionData.answers.forEach(answer => {
+          csvRows.push([
+            answer.questionNumber,
+            answer.selectedOptions.join(';'),
+            answer.status,
+            answer.timeSpent
+          ]);
+        });
+
+        // Convert to CSV string
+        const csvContent = csvRows.map(row => row.join(',')).join('\n');
+        
+        // Create and trigger download
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `Exam_Response_${Date.now()}.csv`;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
 
       handlePdfUpload(event) {
         const file = event.target.files[0];
-        if (file && file.type === 'application/pdf') {
-          const fileURL = URL.createObjectURL(file);
-          this.elements.pdfPreview.innerHTML = `<iframe src="${fileURL}"></iframe>`;
-        } else {
+        if (!file) return;
+
+        if (file.type !== 'application/pdf') {
           alert('Please upload a valid PDF file.');
-          event.target.value = ''; // Clear the input
+          event.target.value = '';
+          return;
         }
+
+        // Create object URL and display PDF
+        const fileURL = URL.createObjectURL(file);
+        this.elements.pdfPreview.innerHTML = `
+          <iframe src="${fileURL}#toolbar=0" title="PDF Preview"></iframe>
+        `;
+
+        // Clean up the object URL when the iframe loads
+        const iframe = this.elements.pdfPreview.querySelector('iframe');
+        iframe.onload = () => URL.revokeObjectURL(fileURL);
+      }
+
+      disableInterface() {
+        // Disable all interactive elements
+        const elements = document.querySelectorAll('button, input, select');
+        elements.forEach(element => element.disabled = true);
+        
+        // Remove event listeners from question grid
+        const questionButtons = this.elements.questionGrid.querySelectorAll('button');
+        questionButtons.forEach(button => {
+          button.replaceWith(button.cloneNode(true));
+        });
+        
+        // Stop timer
+        this.pauseTimer();
+        clearInterval(this.timerInterval);
+      }
+
+      addQuestion() {
+        if (!this.allowCustomEdit) return;
+        
+        this.totalQuestions++;
+        this.updateQuestionGrid();
       }
     }
 
-    // Initialize the exam interface
-    const examInterface = new ExamInterface();
+    // Initialize the exam interface when the DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      const examInterface = new ExamInterface();
+    });
   </script>
 </body>
 </html>
-
-
