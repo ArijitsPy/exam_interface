@@ -1,4 +1,4 @@
-# Exam Interface For Computer Based MCQ Tests
+# Exam Interface For Computer Based MCQ/MSQ Tests
 
 This project provides a basic offline exam interface for users to take exams on their local computers. 
 
@@ -14,7 +14,7 @@ This project provides a basic offline exam interface for users to take exams on 
 
 1. **Clone the repository:**
    ```bash
-   git clone [invalid URL removed]
+   git clone https://github.com/ArijitsPy/exam_interface/
 
 
 2. Open index.html in a web browser.
