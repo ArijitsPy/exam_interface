@@ -25,6 +25,11 @@ class ExamInterface {
       exam: config.examName,
       subject: config.subject
     };
+    // Add new properties for exam parts
+    this.parts = config.parts || [];
+    this.numberingType = config.numberingType || 'continuous';
+    this.questionRanges = config.questionRanges || [];
+    
     this.currentQuestion = null;
     this.timerInterval = null;
     this.isPaused = true;
@@ -48,6 +53,9 @@ class ExamInterface {
       document.getElementById('editTimer').style.display = 'none';
       document.getElementById('addQuestion').style.display = 'none';
     }
+    
+    // Add styles for parts display
+    this.addPartStyles();
   }
 
   initializeElements() {
@@ -84,8 +92,100 @@ class ExamInterface {
           <span>${this.candidateInfo.subject}</span>
         </div>
       </div>
+      
+      ${this.questionRanges.length > 0 ? `
+      <div class="parts-info-container">
+        <h3>Exam Structure</h3>
+        <div class="parts-info">
+          ${this.renderPartsInfo()}
+        </div>
+      </div>
+      ` : ''}
     `;
     document.querySelector('.main-content').insertAdjacentHTML('afterbegin', infoHtml);
+  }
+  
+  renderPartsInfo() {
+    if (!this.questionRanges || this.questionRanges.length === 0) {
+      return '';
+    }
+    
+    return `
+      <table class="parts-table">
+        <thead>
+          <tr>
+            <th>Part</th>
+            <th>Questions</th>
+            <th>Numbering</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${this.questionRanges.map(range => `
+            <tr>
+              <td>Part ${range.part}</td>
+              <td>${range.count} questions</td>
+              <td>${range.start} - ${range.end}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+  }
+  
+  addPartStyles() {
+    const style = document.createElement('style');
+    style.textContent = `
+      .parts-info-container {
+        background-color: #f0f8ff;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+      
+      .parts-info-container h3 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        color: #333;
+      }
+      
+      .parts-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      
+      .parts-table th, .parts-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      
+      .parts-table th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+      }
+      
+      .part-header {
+        grid-column: 1 / -1;
+        background-color: #e0e0e0;
+        padding: 5px 10px;
+        margin: 5px 0;
+        border-radius: 4px;
+        font-weight: bold;
+      }
+      
+      #questionGrid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 5px;
+      }
+      
+      @media (max-width: 768px) {
+        #questionGrid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+    `;
+    document.head.appendChild(style);
   }
 
   attachEventListeners() {
@@ -117,10 +217,10 @@ class ExamInterface {
 
     // Add radio button event listeners for angle mode
     document.getElementsByName('angle').forEach(radio => {
-    radio.addEventListener('change', (e) => {
-    this.calculatorState.angleMode = e.target.value;
+      radio.addEventListener('change', (e) => {
+        this.calculatorState.angleMode = e.target.value;
+      });
     });
-  });
   }
 
   updateTimer() {
@@ -172,72 +272,72 @@ class ExamInterface {
   }
 
   openCalculator() {
-  if (!document.getElementById('calculatorModal')) {
-    console.error("Calculator modal element not found");
-    return;
-  }
-  this.elements.calculatorModal.classList.add('active', 'floating-modal');
-  document.body.classList.add('calculator-open');
-  
-  // Position the calculator
-  const calculatorWindow = document.querySelector('.calculator-window');
-  if (!calculatorWindow) {
-    console.error("Calculator window element not found");
-    return;
-  }
-  calculatorWindow.style.left = '50%';
-  calculatorWindow.style.top = '100px';
-  calculatorWindow.style.transform = 'translateX(-50%)';
-  
-  if (!this.calculatorInitialized) {
-    this.initializeCalculator();
-    this.calculatorInitialized = true;
-  }
-  
-  // Make calculator draggable
-  this.makeDraggable(calculatorWindow);
-}
-
-closeCalculator() {
-  this.elements.calculatorModal.classList.remove('active');
-  document.body.classList.remove('calculator-open');
-}
-
-minimizeCalculator() {
-  const calculatorWindow = document.querySelector('.calculator-window');
-  calculatorWindow.classList.toggle('minimized');
-}
-
-makeDraggable(element) {
-  const calculatorHeader = element.querySelector('.calculator-header');
-  const calculatorContainer = element.querySelector('.calculator-container');
-  
-  if (!calculatorHeader || !calculatorContainer) {
-    console.error("Calculator header or container not found");
-    return;
-  }
-  
-  let isDragging = false;
-  let offsetX, offsetY;
-  
-  calculatorHeader.addEventListener('mousedown', function(e) {
-    isDragging = true;
-    offsetX = e.clientX - calculatorContainer.getBoundingClientRect().left;
-    offsetY = e.clientY - calculatorContainer.getBoundingClientRect().top;
-  });
-  
-  document.addEventListener('mousemove', function(e) {
-    if (!isDragging) return;
+    if (!document.getElementById('calculatorModal')) {
+      console.error("Calculator modal element not found");
+      return;
+    }
+    this.elements.calculatorModal.classList.add('active', 'floating-modal');
+    document.body.classList.add('calculator-open');
     
-    calculatorContainer.style.position = 'absolute';
-    calculatorContainer.style.left = (e.clientX - offsetX) + 'px';
-    calculatorContainer.style.top = (e.clientY - offsetY) + 'px';
-  });
+    // Position the calculator
+    const calculatorWindow = document.querySelector('.calculator-window');
+    if (!calculatorWindow) {
+      console.error("Calculator window element not found");
+      return;
+    }
+    calculatorWindow.style.left = '50%';
+    calculatorWindow.style.top = '100px';
+    calculatorWindow.style.transform = 'translateX(-50%)';
+    
+    if (!this.calculatorInitialized) {
+      this.initializeCalculator();
+      this.calculatorInitialized = true;
+    }
+    
+    // Make calculator draggable
+    this.makeDraggable(calculatorWindow);
+  }
   
-  document.addEventListener('mouseup', function() {
-    isDragging = false;
-  });
-}
+  closeCalculator() {
+    this.elements.calculatorModal.classList.remove('active');
+    document.body.classList.remove('calculator-open');
+  }
+  
+  minimizeCalculator() {
+    const calculatorWindow = document.querySelector('.calculator-window');
+    calculatorWindow.classList.toggle('minimized');
+  }
+  
+  makeDraggable(element) {
+    const calculatorHeader = element.querySelector('.calculator-header');
+    const calculatorContainer = element.querySelector('.calculator-container');
+    
+    if (!calculatorHeader || !calculatorContainer) {
+      console.error("Calculator header or container not found");
+      return;
+    }
+    
+    let isDragging = false;
+    let offsetX, offsetY;
+    
+    calculatorHeader.addEventListener('mousedown', function(e) {
+      isDragging = true;
+      offsetX = e.clientX - calculatorContainer.getBoundingClientRect().left;
+      offsetY = e.clientY - calculatorContainer.getBoundingClientRect().top;
+    });
+    
+    document.addEventListener('mousemove', function(e) {
+      if (!isDragging) return;
+      
+      calculatorContainer.style.position = 'absolute';
+      calculatorContainer.style.left = (e.clientX - offsetX) + 'px';
+      calculatorContainer.style.top = (e.clientY - offsetY) + 'px';
+    });
+    
+    document.addEventListener('mouseup', function() {
+      isDragging = false;
+    });
+  }
   
   initializeCalculator() {
     const calculatorDisplay = document.getElementById('calculatorDisplay');
@@ -254,7 +354,7 @@ makeDraggable(element) {
     });
     
     // Handle minimize and close buttons
-    document.querySelector('.minimize-btn').addEventListener('click', function() {
+    document.querySelector('.minimize-btn').addEventListener('click', () => {
       const calcBody = document.querySelector('.calculator-body');
       const displayContainer = document.querySelector('.display-container');
       
@@ -266,6 +366,40 @@ makeDraggable(element) {
         displayContainer.style.display = 'none';
       }
     });
+  
+    // Add keyboard support
+    document.addEventListener('keydown', (e) => {
+      const key = e.key;
+      if (this.elements.calculatorModal.classList.contains('active')) {
+        let buttonType, buttonValue;
+        
+        if (/[0-9.]/.test(key)) {
+          buttonType = 'number';
+          buttonValue = key;
+        } else if (['+', '-', '*', '/', '%'].includes(key)) {
+          buttonType = 'function';
+          buttonValue = key;
+        } else if (key === 'Enter') {
+          buttonType = 'operation';
+          buttonValue = '=';
+        } else if (key === 'Escape') {
+          buttonType = 'action';
+          buttonValue = 'clear';
+        } else if (key === 'Backspace') {
+          buttonType = 'action';
+          buttonValue = 'backspace';
+        }
+        
+        if (buttonType && buttonValue) {
+          this.handleCalculatorInput(buttonType, buttonValue, calculatorDisplay, expressionDisplay);
+        }
+        
+        // Prevent default behavior for calculator keys
+        if (/[0-9.+\-*/%=]|Enter|Escape|Backspace/.test(key)) {
+          e.preventDefault();
+        }
+      }
+    });
     
     // Scientific calculator functions
     this.calculatorState = {
@@ -273,8 +407,26 @@ makeDraggable(element) {
       expression: '',
       memory: 0,
       lastOperation: null,
-      angleMode: 'deg' // 'deg' or 'rad'
+      angleMode: 'deg', // 'deg' or 'rad'
+      waitingForOperand: false,
+      previousValue: null
     };
+  }
+  
+  // Safe evaluator function to replace eval
+  safeEvaluate(expression) {
+    // Remove whitespace and validate expression format
+    const sanitized = expression.replace(/\s+/g, '');
+    if (!/^[0-9+\-*/().%]*$/.test(sanitized)) {
+      throw new Error("Invalid expression");
+    }
+    
+    // Use Function constructor instead of eval (still safer than direct eval)
+    try {
+      return Function('"use strict"; return (' + sanitized + ')')();
+    } catch (e) {
+      throw new Error("Calculation error");
+    }
   }
   
   handleCalculatorInput(type, value, display, expressionDisplay) {
@@ -305,14 +457,18 @@ makeDraggable(element) {
           try {
             state.expression += state.currentValue;
             expressionDisplay.value = state.expression;
-            // Replace spaces before evaluating
-            const cleanExpression = state.expression.replace(/\s+/g, '');
-            state.currentValue = eval(cleanExpression).toString();
+            // Use safer evaluation method
+            state.currentValue = this.safeEvaluate(state.expression).toString();
             state.expression = '';
           } catch (e) {
             state.currentValue = 'Error';
             console.error("Calculator evaluation error:", e);
           }
+        } else {
+          // Handle other operations
+          state.expression += state.currentValue + ' ' + value + ' ';
+          expressionDisplay.value = state.expression;
+          state.waitingForOperand = true;
         }
         break;
         
@@ -380,100 +536,198 @@ makeDraggable(element) {
         
       case 'function':
         const current = parseFloat(state.currentValue);
-        switch(value) {
-          case 'sqrt':
-            state.currentValue = Math.sqrt(current).toString();
-            break;
-            
-          case 'square':
-            state.currentValue = (current * current).toString();
-            break;
-            
-          case 'cube':
-            state.currentValue = (current * current * current).toString();
-            break;
-            
-          case 'reciproc':
-            if (current !== 0) {
-              state.currentValue = (1 / current).toString();
-            } else {
-              state.currentValue = 'Error';
-            }
-            break;
-            
-          case 'sin':
-            state.currentValue = Math.sin(toRadians(current)).toString();
-            break;
-            
-          case 'cos':
-            state.currentValue = Math.cos(toRadians(current)).toString();
-            break;
-            
-          case 'tan':
-            state.currentValue = Math.tan(toRadians(current)).toString();
-            break;
-            
-          case 'asin':
-            state.currentValue = toDegrees(Math.asin(current)).toString();
-            break;
-            
-          case 'acos':
-            state.currentValue = toDegrees(Math.acos(current)).toString();
-            break;
-            
-          case 'atan':
-            state.currentValue = toDegrees(Math.atan(current)).toString();
-            break;
-            
-          case 'sinh':
-            state.currentValue = Math.sinh(current).toString();
-            break;
-            
-          case 'cosh':
-            state.currentValue = Math.cosh(current).toString();
-            break;
-            
-          case 'tanh':
-            state.currentValue = Math.tanh(current).toString();
-            break;
-            
-          case 'asinh':
-            state.currentValue = Math.asinh(current).toString();
-            break;
-            
-          case 'acosh':
-            state.currentValue = Math.acosh(current).toString();
-            break;
-            
-          case 'atanh':
-            state.currentValue = Math.atanh(current).toString();
-            break;
-            
-          case 'ln':
-            state.currentValue = Math.log(current).toString();
-            break;
-            
-          case 'log':
-            state.currentValue = Math.log10(current).toString();
-            break;
-            
-          case 'log2':
-            state.currentValue = Math.log2(current).toString();
-            break;
-            
-          case 'factorial':
-            let result = 1;
-            for (let i = 2; i <= current; i++) {
-              result *= i;
-            }
-            state.currentValue = result.toString();
-            break;
-            
-          case 'abs':
-            state.currentValue = Math.abs(current).toString();
-            break;
+        
+        // Store current value before operation
+        if (['+', '-', '*', '/', '%'].includes(value) && !state.waitingForOperand) {
+          state.previousValue = state.currentValue;
+          state.lastOperation = value;
+          state.waitingForOperand = true;
+          state.expression += state.currentValue + ' ' + value + ' ';
+          expressionDisplay.value = state.expression;
+          break;
         }
-        break;
+        
+        try {
+          switch(value) {
+            case '+':
+              if (state.previousValue !== null) {
+                const prev = parseFloat(state.previousValue);
+                state.currentValue = (prev + current).toString();
+                state.previousValue = null;
+              }
+              break;
+              
+            case '-':
+              if (state.previousValue !== null) {
+                const prev = parseFloat(state.previousValue);
+                state.currentValue = (prev - current).toString();
+                state.previousValue = null;
+              }
+              break;
+      
+            case '*':
+              if (state.previousValue !== null) {
+                const prev = parseFloat(state.previousValue);
+                state.currentValue = (prev * current).toString();
+                state.previousValue = null;
+              }
+              break;
+      
+            case '/':
+              if (state.previousValue !== null) {
+                const prev = parseFloat(state.previousValue);
+                if (current !== 0) {
+                  state.currentValue = (prev / current).toString();
+                } else {
+                  throw new Error("Division by zero");
+                }
+                state.previousValue = null;
+              }
+              break;
+              
+            case '%':
+              if (state.previousValue !== null) {
+                const prev = parseFloat(state.previousValue);
+                if (current !== 0) {
+                  state.currentValue = (prev % current).toString();
+                } else {
+                  throw new Error("Modulo by zero");
+                }
+                state.previousValue = null;
+              }
+              break; 
+  
+            case 'sqrt':
+              if (current < 0) {
+                throw new Error("Invalid input for square root");
+              }
+              state.currentValue = Math.sqrt(current).toString();
+              break;
+              
+            case 'square':
+              state.currentValue = (current * current).toString();
+              break;
+              
+            case 'cube':
+              state.currentValue = (current * current * current).toString();
+              break;
+              
+            case 'reciproc':
+              if (current !== 0) {
+                state.currentValue = (1 / current).toString();
+              } else {
+                throw new Error("Division by zero");
+              }
+              break;
+              
+            case 'sin':
+              state.currentValue = Math.sin(toRadians(current)).toString();
+              break;
+              
+            case 'cos':
+              state.currentValue = Math.cos(toRadians(current)).toString();
+              break;
+              
+            case 'tan':
+              const tanInput = toRadians(current);
+              if (Math.abs(Math.cos(tanInput)) < 1e-10) {
+                throw new Error("Undefined result for tangent");
+              }
+              state.currentValue = Math.tan(tanInput).toString();
+              break;
+              
+            case 'asin':
+              if (current < -1 || current > 1) {
+                throw new Error("Input out of range for arcsine");
+              }
+              state.currentValue = toDegrees(Math.asin(current)).toString();
+              break;
+              
+            case 'acos':
+              if (current < -1 || current > 1) {
+                throw new Error("Input out of range for arccosine");
+              }
+              state.currentValue = toDegrees(Math.acos(current)).toString();
+              break;
+              
+            case 'atan':
+              state.currentValue = toDegrees(Math.atan(current)).toString();
+              break;
+              
+            case 'sinh':
+              state.currentValue = Math.sinh(current).toString();
+              break;
+              
+            case 'cosh':
+              state.currentValue = Math.cosh(current).toString();
+              break;
+              
+            case 'tanh':
+              state.currentValue = Math.tanh(current).toString();
+              break;
+              
+            case 'asinh':
+              state.currentValue = Math.asinh(current).toString();
+              break;
+              
+            case 'acosh':
+              if (current < 1) {
+                throw new Error("Input out of range for hyperbolic arccosine");
+              }
+              state.currentValue = Math.acosh(current).toString();
+              break;
+              
+            case 'atanh':
+              if (current <= -1 || current >= 1) {
+                throw new Error("Input out of range for hyperbolic arctangent");
+              }
+              state.currentValue = Math.atanh(current).toString();
+              break;
+              
+            case 'ln':
+              if (current <= 0) {
+                throw new Error("Input out of range for natural logarithm");
+              }
+              state.currentValue = Math.log(current).toString();
+              break;
+              
+            case 'log':
+              if (current <= 0) {
+                throw new Error("Input out of range for logarithm");
+              }
+              state.currentValue = Math.log10(current).toString();
+              break;
+              
+            case 'log2':
+              if (current <= 0) {
+                throw new Error("Input out of range for logarithm base 2");
+              }
+              state.currentValue = Math.log2(current).toString();
+              break;
+              
+            case 'factorial':
+              if (current < 0 || !Number.isInteger(current)) {
+                throw new Error("Invalid input for factorial");
+              }
+              if (current > 170) {
+                throw new Error("Factorial too large to compute");
+              }
+              let result = 1;
+              for (let i = 2; i <= current; i++) {
+                result *= i;
+              }
+              state.currentValue = result.toString();
+              break;
+              
+            case 'abs':
+              state.currentValue = Math.abs(current).toString();
+              break;
+          }
+        } catch (e) {
+          state.currentValue = 'Error';
+          console.error("Calculator function error:", e);
+        }
+        break; 
         
       case 'constant':
         switch(value) {
@@ -556,7 +810,70 @@ makeDraggable(element) {
     }
   }
 
-  selectQuestion(questionNumber, button) {
+  updateQuestionGrid() {
+    this.elements.questionGrid.innerHTML = '';
+    
+    // Check if we're using the parts structure
+    if (this.questionRanges && this.questionRanges.length > 0) {
+      // Track the overall question numbering
+      let overallQuestionNumber = 1;
+      
+      // Loop through each part to create the question grid
+      this.questionRanges.forEach(range => {
+        // Add part header
+        const partHeader = document.createElement('div');
+        partHeader.className = 'part-header';
+        partHeader.textContent = `Part ${range.part}`;
+        this.elements.questionGrid.appendChild(partHeader);
+        
+        // Add questions for this part
+        for (let i = 0; i < range.count; i++) {
+          const displayNumber = this.numberingType === 'continuous' ? 
+            range.start + i : 
+            i + 1;
+            
+          const button = document.createElement('button');
+          button.className = 'question-button not-visited';
+          button.textContent = displayNumber;
+          button.dataset.number = overallQuestionNumber;
+          button.dataset.part = range.part;
+          button.dataset.displayNumber = displayNumber;
+          
+          // Set question status if it exists
+          if (this.answers.has(overallQuestionNumber)) {
+            const status = this.answers.get(overallQuestionNumber).status;
+            button.className = `question-button ${status}`;
+          }
+          
+          button.addEventListener('click', () => {
+            this.selectQuestion(overallQuestionNumber, button, displayNumber, range.part);
+          });
+          
+          this.elements.questionGrid.appendChild(button);
+          overallQuestionNumber++;
+        }
+      });
+    } else {
+      // Original implementation for simple question grid
+      for (let i = 1; i <= this.totalQuestions; i++) {
+        const button = document.createElement('button');
+        button.textContent = i;
+        button.addEventListener('click', () => this.selectQuestion(i, button));
+        
+        // Set initial state
+        if (this.answers.has(i)) {
+          const answer = this.answers.get(i);
+          button.classList.add(answer.status);
+        } else {
+          button.classList.add('not-visited');
+        }
+        
+        this.elements.questionGrid.appendChild(button);
+      }
+    }
+  }
+
+  selectQuestion(questionNumber, button, displayNumber, part) {
     // Update current selection
     const currentButton = this.elements.questionGrid.querySelector('.current');
     if (currentButton) {
@@ -570,8 +887,12 @@ makeDraggable(element) {
     this.currentQuestion = questionNumber;
     button.classList.add('current');
     
-    // Update question display
-    this.elements.selectedQuestion.textContent = `Question ${questionNumber}`;
+    // Update question display - handle parts if they exist
+    if (part) {
+      this.elements.selectedQuestion.textContent = `Question ${displayNumber} (Part ${part})`;
+    } else {
+      this.elements.selectedQuestion.textContent = `Question ${questionNumber}`;
+    }
     
     // Update status if not visited
     if (button.classList.contains('not-visited')) {
@@ -587,6 +908,25 @@ makeDraggable(element) {
     } else {
       // Default to MCQ if no saved answer
       this.setQuestionType('mcq');
+    }
+  }
+
+  getSelectedAnswer() {
+    if (this.questionType === 'nat') {
+      const value = this.elements.numericalAnswer.value.trim();
+      if (value === '') {
+        return null;
+      }
+      return [value];
+    } else {
+      const selectedOptions = Array.from(this.elements.options.querySelectorAll('input'))
+        .filter(input => input.checked)
+        .map(input => input.value);
+      
+      if (selectedOptions.length === 0) {
+        return null;
+      }
+      return selectedOptions;
     }
   }
 
@@ -611,44 +951,6 @@ makeDraggable(element) {
 
     // Remove from answers map
     this.answers.delete(this.currentQuestion);
-  }
-
-  updateQuestionGrid() {
-    this.elements.questionGrid.innerHTML = '';
-    for (let i = 1; i <= this.totalQuestions; i++) {
-      const button = document.createElement('button');
-      button.textContent = i;
-      button.addEventListener('click', () => this.selectQuestion(i, button));
-      
-      // Set initial state
-      if (this.answers.has(i)) {
-        const answer = this.answers.get(i);
-        button.classList.add(answer.status);
-      } else {
-        button.classList.add('not-visited');
-      }
-      
-      this.elements.questionGrid.appendChild(button);
-    }
-  }
-
-  getSelectedAnswer() {
-    if (this.questionType === 'nat') {
-      const value = this.elements.numericalAnswer.value.trim();
-      if (value === '') {
-        return null;
-      }
-      return [value];
-    } else {
-      const selectedOptions = Array.from(this.elements.options.querySelectorAll('input'))
-        .filter(input => input.checked)
-        .map(input => input.value);
-      
-      if (selectedOptions.length === 0) {
-        return null;
-      }
-      return selectedOptions;
-    }
   }
 
   saveAndNext() {
@@ -679,11 +981,35 @@ makeDraggable(element) {
     currentButton.classList.remove('not-answered', 'not-visited', 'marked-review', 'saved-review');
     currentButton.classList.add('answered');
 
-    // Move to next question
-    const nextQuestion = this.currentQuestion < this.totalQuestions ? this.currentQuestion + 1 : null;
-    if (nextQuestion) {
-      const nextButton = this.elements.questionGrid.children[nextQuestion - 1];
-      this.selectQuestion(nextQuestion, nextButton);
+    // Move to next question - handle with parts structure if necessary
+    this.moveToNextQuestion();
+  }
+
+  moveToNextQuestion() {
+    // Get all question buttons
+    const buttons = Array.from(this.elements.questionGrid.querySelectorAll('button'));
+    
+    // Find the index of the current question
+    const currentIndex = buttons.findIndex(btn => btn.classList.contains('current'));
+    
+    // Determine next question
+    const nextIndex = currentIndex + 1;
+    
+    // If there's a next question, select it
+    if (nextIndex < buttons.length) {
+      const nextButton = buttons[nextIndex];
+      
+      // If using parts structure
+      if (this.questionRanges && this.questionRanges.length > 0) {
+        const nextQuestionNumber = parseInt(nextButton.dataset.number);
+        const nextDisplayNumber = parseInt(nextButton.dataset.displayNumber);
+        const nextPart = nextButton.dataset.part;
+        
+        this.selectQuestion(nextQuestionNumber, nextButton, nextDisplayNumber, nextPart);
+      } else {
+        const nextQuestionNumber = nextIndex + 1;
+        this.selectQuestion(nextQuestionNumber, nextButton);
+      }
     } else {
       alert('You have reached the last question');
     }
@@ -695,11 +1021,8 @@ makeDraggable(element) {
       return;
     }
 
-    const selectedOptions = Array.from(this.elements.options.querySelectorAll('input'))
-      .filter(input => input.checked)
-      .map(input => input.value);
-
-    if (selectedOptions.length === 0) {
+    const selectedOptions = this.getSelectedAnswer();
+    if (!selectedOptions) {
       alert('Please select an answer before marking for review');
       return;
     }
@@ -710,6 +1033,7 @@ makeDraggable(element) {
     // Save answer with review status
     this.answers.set(this.currentQuestion, {
       value: selectedOptions,
+      type: this.questionType,
       status: 'saved-review',
       timeSpent: timeSpent
     });
@@ -720,11 +1044,7 @@ makeDraggable(element) {
     currentButton.classList.add('saved-review');
 
     // Move to next question
-    const nextQuestion = this.currentQuestion < this.totalQuestions ? this.currentQuestion + 1 : null;
-    if (nextQuestion) {
-      const nextButton = this.elements.questionGrid.children[nextQuestion - 1];
-      this.selectQuestion(nextQuestion, nextButton);
-    }
+    this.moveToNextQuestion();
   }
 
   markForReviewAndNext() {
@@ -739,6 +1059,7 @@ makeDraggable(element) {
     // Mark for review without requiring an answer
     this.answers.set(this.currentQuestion, {
       value: [],
+      type: this.questionType,
       status: 'marked-review',
       timeSpent: timeSpent
     });
@@ -749,11 +1070,7 @@ makeDraggable(element) {
     currentButton.classList.add('marked-review');
 
     // Move to next question
-    const nextQuestion = this.currentQuestion < this.totalQuestions ? this.currentQuestion + 1 : null;
-    if (nextQuestion) {
-      const nextButton = this.elements.questionGrid.children[nextQuestion - 1];
-      this.selectQuestion(nextQuestion, nextButton);
-    }
+    this.moveToNextQuestion();
   }
 
   generateSubmissionSummary() {
