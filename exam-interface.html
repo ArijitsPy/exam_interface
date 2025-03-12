@@ -16,28 +16,37 @@
     </div>
 
     <div class="exam-section">
-      <h2>Answer Sheet</h2>
+      <table>
+      <tr>
+        <td>  
+          <h2>Answer Sheet</h2>
+        </td>
+        <td>
+      		<p id="selectedQuestion">No question selected</p>
+      	</td>
+      </tr>
+      </table>
+
       <table>
         <tr>
-            <td>
-      		<p id="selectedQuestion">No question selected</p>
-      	    </td>
-            <td>
+          <td>
       <div class="question-controls">
         <div class="question-type-buttons">
           <button class="question-type-button active" id="mcqButton">MCQ</button>
           <button class="question-type-button" id="msqButton">MSQ</button>
           <button class="question-type-button" id="natButton">NAT</button>
         </div>
-         </td>
-        </tr>
-    </table>
+          </td>
+          <td>
         <div class="options" id="options">
           <label><input type="radio" name="option" value="a"> A </label>
           <label><input type="radio" name="option" value="b"> B </label>
           <label><input type="radio" name="option" value="c"> C </label>
           <label><input type="radio" name="option" value="d"> D </label>
         </div>
+        </td>
+        </tr>
+      </table>
         <div class="nat-input" id="natInput" style="display: none;">
           <input type="number" id="numericalAnswer" placeholder="Enter numerical answer">
         </div>
