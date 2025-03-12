@@ -4,297 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Exam Interface</title>
-  <style>
-    /* Original styles remain the same */
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      display: flex;
-      height: 100vh;
-      overflow: hidden;
-    }
-    
-    .candidate-info {
-      background-color: white;
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-    }
-
-    .info-item {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .info-item label {
-      font-size: 0.8rem;
-      color: #666;
-    }
-
-    .info-item span {
-      font-weight: bold;
-      color: #333;
-    }
-    
-    .main-content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      padding: 20px;
-      overflow: auto;
-    }
-    
-    .pdf-preview {
-      height: 600px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      overflow: hidden;
-      background-color: #f5f5f5;
-      position: relative;
-    }
-    
-    .pdf-preview iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-    
-    .right-panel-container {
-      width: 320px;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      overflow: hidden;
-      border-left: 1px solid #ddd;
-      background-color: #f9f9f9;
-    }
-    
-    .right-panel {
-      flex: 1;
-      padding: 20px;
-      overflow-y: auto;
-    }
-    
-    .timer-section {
-      padding: 15px;
-      margin-bottom: 20px;
-      background-color: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    .timer-controls {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .timer-controls button {
-      padding: 5px 10px;
-      border-radius: 4px;
-      border: 1px solid #ddd;
-      background-color: #f5f5f5;
-      cursor: pointer;
-    }
-    
-    .timer {
-      font-size: 1rem;
-      color: #d32f2f;
-      font-weight: bold;
-      text-align: center;
-      margin-right: 10px;
-    }
-    
-    .timer.warning {
-      animation: blink 1s infinite;
-    }
-    
-    @keyframes blink {
-      50% { opacity: 0.5; }
-    }
-    
-    .status-summary {
-      margin-bottom: 20px;
-      background-color: #fff;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    
-    .status-summary div {
-      display: flex;
-      align-items: center;
-      margin: 8px 0;
-    }
-    
-    .status-summary div span {
-      display: inline-block;
-      width: 24px;
-      height: 24px;
-      margin-right: 12px;
-      border-radius: 4px;
-    }
-    
-    .status-summary .not-visited span { background-color: #e0e0e0; }
-    .status-summary .not-answered span { background-color: #f13c33; }
-    .status-summary .answered span { background-color: #4caf50; }
-    .status-summary .marked-review span { background-color: #2196f3; }
-    .status-summary .saved-review span { background-color: #ffd700; }
-    
-    .question-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
-      gap: 8px;
-      padding: 15px;
-      background-color: #fff;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    
-    .question-grid button {
-      aspect-ratio: 1;
-      text-align: center;
-      border: 1px solid #ccc;
-      background-color: #e0e0e0;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: all 0.2s ease;
-    }
-    
-    .question-grid button:hover {
-      transform: scale(1.05);
-    }
-    
-    .question-grid button.current {
-      border: 2px solid #000;
-    }
-    
-    .question-controls {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-
-    .question-type-buttons {
-      display: flex;
-      gap: 10px;
-    }
-
-    .question-type-button {
-      padding: 8px 16px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      cursor: pointer;
-      background-color: #f5f5f5;
-    }
-
-    .question-type-button.active {
-      background-color: #2196f3;
-      color: white;
-      border-color: #1976d2;
-    }
-
-    .options {
-      display: flex;
-      gap: 15px;
-      flex-wrap: wrap;
-    }
-
-    .options label {
-      display: flex;
-      align-items: center;
-      padding: 8px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-
-    .options label:hover {
-      background-color: #e0e0e0;
-    }
-    
-    .options input[type="radio"],
-    .options input[type="checkbox"] {
-      margin-right: 10px;
-    }
-    
-    .action-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-      margin: 20px 0;
-    }
-    
-    .action-buttons button {
-      border-radius: 25px;
-      padding: 12px 24px;
-      cursor: pointer;
-      font-weight: bold;
-      border: none;
-      transition: all 0.2s;
-    }
-    
-    .action-buttons button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    }
-    
-    .save-next { background-color: #4CAF50; color: white; }
-    .clear { background-color: #e0e0e0; color: black; }
-    .save-review { background-color: #FFEB3B; color: black; }
-    .mark-review-next { background-color: #2196F3; color: white; }
-    
-    .submit-button {
-      background-color: #FF5722;
-      color: white;
-      padding: 12px 36px;
-      font-weight: bold;
-      border-radius: 25px;
-      cursor: pointer;
-      margin: 20px auto;
-      display: block;
-      border: none;
-      transition: all 0.2s;
-    }
-    
-    .submit-button:hover {
-      background-color: #f4511e;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-    
-    .bottom-panel {
-      padding: 15px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #f5f5f5;
-      border-top: 1px solid #ddd;
-    }
-    
-    #selectedQuestion {
-      font-size: 1.2rem;
-      font-weight: bold;
-      text-align: center;
-      margin: 15px 0;
-      padding: 10px;
-      background-color: #f5f5f5;
-      border-radius: 6px;
-    }
-    
-    .question-grid button.answered { background-color: #4caf50; color: white; }
-    .question-grid button.not-answered { background-color: #f44336; color: white; }
-    .question-grid button.not-visited { background-color: #e0e0e0; color: black; }
-    .question-grid button.marked-review { background-color: #2196f3; color: white; }
-    .question-grid button.saved-review { background-color: #ffeb3b; color: black; }
-  </style>
+  <link rel="stylesheet" href="styles.css"> <!-- Link to external CSS -->
 </head>
 <body>
   <div class="main-content">
@@ -307,18 +17,29 @@
 
     <div class="exam-section">
       <h2>Answer Sheet</h2>
-      <p id="selectedQuestion">No question selected</p>
-      
+      <table>
+        <tr>
+            <td>
+      		<p id="selectedQuestion">No question selected</p>
+      	    </td>
+            <td>
       <div class="question-controls">
         <div class="question-type-buttons">
           <button class="question-type-button active" id="mcqButton">MCQ</button>
           <button class="question-type-button" id="msqButton">MSQ</button>
+          <button class="question-type-button" id="natButton">NAT</button>
         </div>
+         </td>
+        </tr>
+    </table>
         <div class="options" id="options">
           <label><input type="radio" name="option" value="a"> A </label>
           <label><input type="radio" name="option" value="b"> B </label>
           <label><input type="radio" name="option" value="c"> C </label>
           <label><input type="radio" name="option" value="d"> D </label>
+        </div>
+        <div class="nat-input" id="natInput" style="display: none;">
+          <input type="number" id="numericalAnswer" placeholder="Enter numerical answer">
         </div>
       </div>
 
@@ -335,27 +56,34 @@
 
   <div class="right-panel-container">
     <div class="right-panel">
-      <div class="timer-section">
-        <div class="timer" id="timer">Time Remaining: 03:00:00</div>
-        <div class="timer-controls">
-          <button id="startTimer">Start</button>
-          <button id="pauseTimer">Pause</button>
-          <button id="resetTimer">Reset</button>
-          <button id="editTimer">Edit</button>
+      <div class="fixed-top-panel">
+        <div class="timer-section">
+          <div class="timer-header">
+            <div class="timer" id="timer">Time Remaining: 03:00:00</div>
+            <button id="calculatorBtn" class="calculator-button">Calculator</button>
+          </div>
+          <div class="timer-controls">
+            <button id="startTimer">Start</button>
+            <button id="pauseTimer">Pause</button>
+            <button id="resetTimer">Reset</button>
+            <button id="editTimer">Edit</button>
+          </div>
         </div>
       </div>
     
-      <h3>Status Summary</h3>
-      <div class="status-summary">
-        <div class="not-visited"><span></span>Not Visited</div>
-        <div class="not-answered"><span></span>Not Answered</div>
-        <div class="answered"><span></span>Answered</div>
-        <div class="marked-review"><span></span>Marked for Review</div>
-        <div class="saved-review"><span></span>Saved & Marked for Review</div>
-      </div>
+      <div class="scrollable-panel">
+        <h3>Status Summary</h3>
+        <div class="status-summary">
+          <div class="not-visited"><span></span>Not Visited</div>
+          <div class="not-answered"><span></span>Not Answered</div>
+          <div class="answered"><span></span>Answered</div>
+          <div class="marked-review"><span></span>Marked for Review</div>
+          <div class="saved-review"><span></span>Saved & Marked for Review</div>
+        </div>
 
-      <h3>Question Navigation</h3>
-      <div class="question-grid" id="questionGrid"></div>
+        <h3>Question Navigation</h3>
+        <div class="question-grid" id="questionGrid"></div>
+      </div>
     </div>
     
     <div class="bottom-panel">
@@ -363,568 +91,94 @@
     </div>
   </div>
 
-  <script>
-    class ExamInterface {
-      constructor() {
-        // Check for existing config
-        const config = JSON.parse(localStorage.getItem('examConfig'));
-        if (!config) {
-          window.location.href = 'index.html';
-          return;
-        }
-
-        // Initialize properties
-        this.initializeProperties(config);
-        this.initializeInterface();
-        this.attachEventListeners();
-        this.updateQuestionGrid();
-        this.updateTimer();
-      }
-
-      initializeProperties(config) {
-        this.totalQuestions = config.questionCount;
-        this.timeNeeded = config.timeNeeded;
-        this.timeRemaining = this.timeNeeded * 60;
-        this.allowCustomEdit = config.allowCustomEdit;
-        this.candidateInfo = {
-          name: config.candidateName,
-          exam: config.examName,
-          subject: config.subject
-        };
-        this.currentQuestion = null;
-        this.timerInterval = null;
-        this.isPaused = true;
-        this.answers = new Map();
-        this.questionType = 'mcq';
-        this.questionStartTime = null;
-      }
-
-      initializeInterface() {
-        this.initializeElements();
-        this.createCandidateInfo();
-        
-        // Hide edit controls if not allowed
-        if (!this.allowCustomEdit) {
-          document.getElementById('editTimer').style.display = 'none';
-          document.getElementById('addQuestion').style.display = 'none';
-        }
-      }
-
-      initializeElements() {
-        this.elements = {
-          timer: document.getElementById('timer'),
-          questionGrid: document.getElementById('questionGrid'),
-          selectedQuestion: document.getElementById('selectedQuestion'),
-          options: document.getElementById('options'),
-          pdfPreview: document.getElementById('pdfPreview'),
-          uploadPdf: document.getElementById('uploadPdf'),
-          mcqButton: document.getElementById('mcqButton'),
-          msqButton: document.getElementById('msqButton')
-        };
-      }
-
-      createCandidateInfo() {
-        const infoHtml = `
-          <div class="candidate-info">
-            <div class="info-item">
-              <label>Candidate Name</label>
-              <span>${this.candidateInfo.name}</span>
-            </div>
-            <div class="info-item">
-              <label>Exam</label>
-              <span>${this.candidateInfo.exam}</span>
-            </div>
-            <div class="info-item">
-              <label>Subject</label>
-              <span>${this.candidateInfo.subject}</span>
-            </div>
-          </div>
-        `;
-        document.querySelector('.main-content').insertAdjacentHTML('afterbegin', infoHtml);
-      }
-
-      attachEventListeners() {
-        // Timer controls
-        document.getElementById('startTimer').addEventListener('click', () => this.startTimer());
-        document.getElementById('pauseTimer').addEventListener('click', () => this.pauseTimer());
-        document.getElementById('resetTimer').addEventListener('click', () => this.resetTimer());
-        document.getElementById('editTimer').addEventListener('click', () => this.editTimer());
-
-        // Action buttons
-        document.getElementById('saveNext').addEventListener('click', () => this.saveAndNext());
-        document.getElementById('clear').addEventListener('click', () => this.clearResponse());
-        document.getElementById('saveReview').addEventListener('click', () => this.saveAndMarkForReview());
-        document.getElementById('markReviewNext').addEventListener('click', () => this.markForReviewAndNext());
-        document.getElementById('submitExam').addEventListener('click', () => this.submitExam());
-        document.getElementById('addQuestion').addEventListener('click', () => this.addQuestion());
-
-        // Question type controls
-        this.elements.mcqButton.addEventListener('click', () => this.setQuestionType('mcq'));
-        this.elements.msqButton.addEventListener('click', () => this.setQuestionType('msq'));
-
-        // PDF upload
-        this.elements.uploadPdf.addEventListener('change', (event) => this.handlePdfUpload(event));
-      }
-
-      updateTimer() {
-        const hours = Math.floor(this.timeRemaining / 3600);
-        const minutes = Math.floor((this.timeRemaining % 3600) / 60);
-        const seconds = this.timeRemaining % 60;
-        
-        this.elements.timer.textContent = `Time Remaining: ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-        
-        if (this.timeRemaining <= 300) {
-          this.elements.timer.classList.add('warning');
-        }
-      }
-
-      startTimer() {
-        if (this.isPaused) {
-          this.isPaused = false;
-          this.timerInterval = setInterval(() => {
-            if (this.timeRemaining <= 0) {
-              this.submitExam();
-              return;
-            }
-            this.timeRemaining--;
-            this.updateTimer();
-          }, 1000);
-        }
-      }
-
-      pauseTimer() {
-        this.isPaused = true;
-        clearInterval(this.timerInterval);
-      }
-
-      resetTimer() {
-        this.pauseTimer();
-        this.timeRemaining = this.timeNeeded * 60;
-        this.updateTimer();
-      }
-
-      editTimer() {
-        if (!this.allowCustomEdit) return;
-        
-        this.pauseTimer();
-        const newTime = prompt("Enter time in seconds:", this.timeRemaining);
-        if (newTime && !isNaN(newTime) && newTime > 0) {
-          this.timeRemaining = parseInt(newTime);
-          this.updateTimer();
-        }
-      }
-
-      setQuestionType(type) {
-        this.questionType = type;
-        
-        // Update button styles
-        this.elements.mcqButton.classList.remove('active');
-        this.elements.msqButton.classList.remove('active');
-        document.getElementById(`${type}Button`).classList.add('active');
-        
-        // Update options
-        this.updateOptionsForType(type);
-      }
-
-      updateOptionsForType(type) {
-        const options = ['a', 'b', 'c', 'd'];
-        const inputType = type === 'mcq' ? 'radio' : 'checkbox';
-        
-        // Clear existing options
-        this.elements.options.innerHTML = '';
-        
-        // Create new options with correct input type
-        options.forEach(value => {
-          const label = document.createElement('label');
-          const input = document.createElement('input');
-          input.type = inputType;
-          input.name = type === 'mcq' ? 'option' : `option-${value}`;
-          input.value = value;
+  <!-- Calculator Modal -->
+  <div id="calculatorModal" class="modal">
+    <div class="modal-content calculator-window">
+      <div class="calculator-header">
+        <span>Scientific Calculator</span>
+        <div class="calculator-controls">
+          <button class="minimize-btn">─</button>
+          <button class="close-modal">×</button>
+        </div>
+      </div>
+      <div class="calculator">
+        <div class="calculator-display">
+          <input type="text" id="calculatorExpression" class="expression-display" placeholder="Enter expression...">
+          <input type="text" id="calculatorDisplay" class="result-display" readonly value="0">
+        </div>
+        <div class="calculator-mode">
+          <label><input type="radio" name="angle" value="deg" checked> Deg</label>
+          <label><input type="radio" name="angle" value="rad"> Rad</label>
+        </div>
+        <div class="calculator-keys scientific">
+          <button data-action="mod">mod</button>
+          <button data-action="mc">MC</button>
+          <button data-action="mr">MR</button>
+          <button data-action="ms">MS</button>
+          <button data-action="m-plus">M+</button>
+          <button data-action="m-minus">M-</button>
           
-          label.appendChild(input);
-          label.appendChild(document.createTextNode(` ${value.toUpperCase()} `));
-          this.elements.options.appendChild(label);
-        });
-
-        // Restore any saved answers for current question
-        if (this.currentQuestion && this.answers.has(this.currentQuestion)) {
-          const answer = this.answers.get(this.currentQuestion);
-          const inputs = this.elements.options.querySelectorAll('input');
-          inputs.forEach(input => {
-            input.checked = answer.value.includes(input.value);
-          });
-        }
-      }
-
-      selectQuestion(questionNumber, button) {
-        // Update current selection
-        const currentButton = this.elements.questionGrid.querySelector('.current');
-        if (currentButton) {
-          currentButton.classList.remove('current');
-        }
-
-        // Store start time for new question
-        this.questionStartTime = new Date();
-        
-        // Update current question
-        this.currentQuestion = questionNumber;
-        button.classList.add('current');
-        
-        // Update question display
-        this.elements.selectedQuestion.textContent = `Question ${questionNumber}`;
-        
-        // Update status if not visited
-        if (button.classList.contains('not-visited')) {
-          button.classList.remove('not-visited');
-          button.classList.add('not-answered');
-        }
-
-        // Restore saved answer if exists
-        const savedAnswer = this.answers.get(questionNumber);
-        this.updateOptionsForType(this.questionType);
-        if (savedAnswer) {
-          const inputs = this.elements.options.querySelectorAll('input');
-          inputs.forEach(input => {
-            input.checked = savedAnswer.value.includes(input.value);
-          });
-        }
-      }
-
-      clearResponse() {
-        if (!this.currentQuestion) {
-          alert('Please select a question first');
-          return;
-        }
-
-        // Clear all selected options
-        const inputs = this.elements.options.querySelectorAll('input');
-        inputs.forEach(input => input.checked = false);
-
-        // Update question status
-        const currentButton = this.elements.questionGrid.querySelector('.current');
-        currentButton.classList.remove('answered', 'saved-review');
-        currentButton.classList.add('not-answered');
-
-        // Remove from answers map
-        this.answers.delete(this.currentQuestion);
-      }
-
-      updateQuestionGrid() {
-        this.elements.questionGrid.innerHTML = '';
-        for (let i = 1; i <= this.totalQuestions; i++) {
-          const button = document.createElement('button');
-          button.textContent = i;
-          button.addEventListener('click', () => this.selectQuestion(i, button));
+          <button data-function="sinh">sinh</button>
+          <button data-function="cosh">cosh</button>
+          <button data-function="tanh">tanh</button>
+          <button data-function="exp">Exp</button>
+          <button data-action="left-parenthesis">(</button>
+          <button data-action="right-parenthesis">)</button>
+          <button data-action="backspace">←</button>
+          <button data-action="clear">C</button>
+          <button data-action="sign">+/-</button>
+          <button data-function="sqrt">√</button>
           
-          // Set initial state
-          if (this.answers.has(i)) {
-            const answer = this.answers.get(i);
-            button.classList.add(answer.status);
-          } else {
-            button.classList.add('not-visited');
-          }
+          <button data-function="asinh">sinh<sup>-1</sup></button>
+          <button data-function="acosh">cosh<sup>-1</sup></button>
+          <button data-function="atanh">tanh<sup>-1</sup></button>
+          <button data-function="log2">log<sub>2</sub>x</button>
+          <button data-function="ln">ln</button>
+          <button data-function="log">log</button>
+          <button data-number="7">7</button>
+          <button data-number="8">8</button>
+          <button data-number="9">9</button>
+          <button data-operation="/">/</button>
+          <button data-operation="%">%</button>
           
-          this.elements.questionGrid.appendChild(button);
-        }
-      }
-
-      saveAndNext() {
-        if (!this.currentQuestion) {
-          alert('Please select a question first');
-          return;
-        }
-
-        const selectedOptions = Array.from(this.elements.options.querySelectorAll('input'))
-          .filter(input => input.checked)
-          .map(input => input.value);
-
-        if (selectedOptions.length === 0) {
-          alert('Please select an answer');
-          return;
-        }
-
-        // Calculate time spent
-        const timeSpent = new Date() - this.questionStartTime;
-
-        // Save answer with metadata
-        this.answers.set(this.currentQuestion, {
-          value: selectedOptions,
-          status: 'answered',
-          timeSpent: timeSpent
-        });
-
-        // Update button status
-        const currentButton = this.elements.questionGrid.querySelector('.current');
-        currentButton.classList.remove('not-answered', 'not-visited', 'marked-review', 'saved-review');
-        currentButton.classList.add('answered');
-
-        // Move to next question
-        const nextQuestion = this.currentQuestion < this.totalQuestions ? this.currentQuestion + 1 : null;
-        if (nextQuestion) {
-          const nextButton = this.elements.questionGrid.children[nextQuestion - 1];
-          this.selectQuestion(nextQuestion, nextButton);
-        } else {
-          alert('You have reached the last question');
-        }
-      }
-
-saveAndMarkForReview() {
-        if (!this.currentQuestion) {
-          alert('Please select a question first');
-          return;
-        }
-
-        const selectedOptions = Array.from(this.elements.options.querySelectorAll('input'))
-          .filter(input => input.checked)
-          .map(input => input.value);
-
-        if (selectedOptions.length === 0) {
-          alert('Please select an answer before marking for review');
-          return;
-        }
-
-        // Calculate time spent
-        const timeSpent = new Date() - this.questionStartTime;
-
-        // Save answer with review status
-        this.answers.set(this.currentQuestion, {
-          value: selectedOptions,
-          status: 'saved-review',
-          timeSpent: timeSpent
-        });
-
-        // Update button status
-        const currentButton = this.elements.questionGrid.querySelector('.current');
-        currentButton.classList.remove('not-answered', 'not-visited', 'answered', 'marked-review');
-        currentButton.classList.add('saved-review');
-
-        // Move to next question
-        const nextQuestion = this.currentQuestion < this.totalQuestions ? this.currentQuestion + 1 : null;
-        if (nextQuestion) {
-          const nextButton = this.elements.questionGrid.children[nextQuestion - 1];
-          this.selectQuestion(nextQuestion, nextButton);
-        }
-      }
-
-      markForReviewAndNext() {
-        if (!this.currentQuestion) {
-          alert('Please select a question first');
-          return;
-        }
-
-        // Calculate time spent even if no answer selected
-        const timeSpent = new Date() - this.questionStartTime;
-
-        // Mark for review without requiring an answer
-        this.answers.set(this.currentQuestion, {
-          value: [],
-          status: 'marked-review',
-          timeSpent: timeSpent
-        });
-
-        // Update button status
-        const currentButton = this.elements.questionGrid.querySelector('.current');
-        currentButton.classList.remove('not-answered', 'not-visited', 'answered', 'saved-review');
-        currentButton.classList.add('marked-review');
-
-        // Move to next question
-        const nextQuestion = this.currentQuestion < this.totalQuestions ? this.currentQuestion + 1 : null;
-        if (nextQuestion) {
-          const nextButton = this.elements.questionGrid.children[nextQuestion - 1];
-          this.selectQuestion(nextQuestion, nextButton);
-        }
-      }
-
-      generateSubmissionSummary() {
-        const summary = {
-          answeredCount: 0,
-          notAnsweredCount: 0,
-          markedReviewCount: 0,
-          savedReviewCount: 0,
-          notVisitedCount: 0
-        };
-
-        for (let i = 1; i <= this.totalQuestions; i++) {
-          const answer = this.answers.get(i);
-          if (!answer) {
-            summary.notVisitedCount++;
-          } else {
-            switch (answer.status) {
-              case 'answered':
-                summary.answeredCount++;
-                break;
-              case 'marked-review':
-                summary.markedReviewCount++;
-                break;
-              case 'saved-review':
-                summary.savedReviewCount++;
-                break;
-              default:
-                summary.notAnsweredCount++;
-            }
-          }
-        }
-
-        return summary;
-      }
-
-      submitExam() {
-        const summary = this.generateSubmissionSummary();
-        const unansweredTotal = summary.notAnsweredCount + summary.notVisitedCount + 
-                              summary.markedReviewCount;
-
-        if (unansweredTotal > 0) {
-          const confirmMessage = `
-            Summary before submission:
-            - Answered: ${summary.answeredCount}
-            - Saved & Marked for Review: ${summary.savedReviewCount}
-            - Not Answered/Not Visited: ${unansweredTotal}
-
-            Are you sure you want to submit the exam?
-          `;
+          <button data-constant="pi">π</button>
+          <button data-constant="e">e</button>
+          <button data-function="factorial">n!</button>
+          <button data-function="logbase">log<sub>y</sub>x</button>
+          <button data-function="exp">e<sup>x</sup></button>
+          <button data-function="powten">10<sup>x</sup></button>
+          <button data-number="4">4</button>
+          <button data-number="5">5</button>
+          <button data-number="6">6</button>
+          <button data-operation="*">*</button>
+          <button data-function="reciproc">1/x</button>
           
-          if (!confirm(confirmMessage)) {
-            return;
-          }
-        }
+          <button data-function="sin">sin</button>
+          <button data-function="cos">cos</button>
+          <button data-function="tan">tan</button>
+          <button data-function="pow">x<sup>y</sup></button>
+          <button data-function="cube">x<sup>3</sup></button>
+          <button data-function="square">x<sup>2</sup></button>
+          <button data-number="1">1</button>
+          <button data-number="2">2</button>
+          <button data-number="3">3</button>
+          <button data-operation="-">-</button>
+          <button data-operation="=">=</button>
+          
+          <button data-function="asin">sin<sup>-1</sup></button>
+          <button data-function="acos">cos<sup>-1</sup></button>
+          <button data-function="atan">tan<sup>-1</sup></button>
+          <button data-function="nthroot"><sup>y</sup>√x</button>
+          <button data-function="cuberoot"><sup>3</sup>√</button>
+          <button data-function="abs">|x|</button>
+          <button data-number="0" class="double-width">0</button>
+          <button data-number=".">.</button>
+          <button data-operation="+">+</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        // Stop timer
-        this.pauseTimer();
-        
-        // Calculate exam duration and timestamps
-        const endDate = new Date();
-        const totalDuration = (this.timeNeeded * 60) - this.timeRemaining;
-        const startDate = new Date(endDate.getTime() - (totalDuration * 1000));
-
-        // Prepare submission data
-        const submissionData = {
-          candidateInfo: this.candidateInfo,
-          examMetadata: {
-            startDate: startDate.toISOString(),
-            endDate: endDate.toISOString(),
-            totalDuration,
-            timeRemaining: this.timeRemaining
-          },
-          answers: Array.from(this.answers.entries()).map(([questionNumber, answer]) => ({
-            questionNumber,
-            selectedOptions: answer.value,
-            status: answer.status,
-            timeSpent: answer.timeSpent || 0
-          })),
-          summary
-        };
-
-        // Generate CSV data
-        this.generateAndDownloadCSV(submissionData);
-
-        // In a real application, send data to server
-        console.log('Exam submitted:', submissionData);
-
-        // Disable interface
-        this.disableInterface();
-        
-        alert('Exam submitted successfully! Your response sheet has been downloaded.');
-      }
-
-      generateAndDownloadCSV(submissionData) {
-        const csvRows = [
-          ['Exam Response Sheet'],
-          [''],
-          ['Candidate Information'],
-          ['Name', submissionData.candidateInfo.name],
-          ['Exam', submissionData.candidateInfo.exam],
-          ['Subject', submissionData.candidateInfo.subject],
-          [''],
-          ['Exam Details'],
-          ['Start Time', submissionData.examMetadata.startDate],
-          ['End Time', submissionData.examMetadata.endDate],
-          ['Total Duration (seconds)', submissionData.examMetadata.totalDuration],
-          [''],
-          ['Response Summary'],
-          ['Total Questions', this.totalQuestions],
-          ['Answered', submissionData.summary.answeredCount],
-          ['Saved & Marked for Review', submissionData.summary.savedReviewCount],
-          ['Marked for Review', submissionData.summary.markedReviewCount],
-          ['Not Answered', submissionData.summary.notAnsweredCount],
-          ['Not Visited', submissionData.summary.notVisitedCount],
-          [''],
-          ['Detailed Responses'],
-          ['Question Number', 'Selected Options', 'Status', 'Time Spent (ms)']
-        ];
-
-        // Add individual question responses
-        submissionData.answers.forEach(answer => {
-          csvRows.push([
-            answer.questionNumber,
-            answer.selectedOptions.join(';'),
-            answer.status,
-            answer.timeSpent
-          ]);
-        });
-
-        // Convert to CSV string
-        const csvContent = csvRows.map(row => row.join(',')).join('\n');
-        
-        // Create and trigger download
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = `Exam_Response_${Date.now()}.csv`;
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
-
-      handlePdfUpload(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        if (file.type !== 'application/pdf') {
-          alert('Please upload a valid PDF file.');
-          event.target.value = '';
-          return;
-        }
-
-        // Create object URL and display PDF
-        const fileURL = URL.createObjectURL(file);
-        this.elements.pdfPreview.innerHTML = `
-          <iframe src="${fileURL}#toolbar=0" title="PDF Preview"></iframe>
-        `;
-
-        // Clean up the object URL when the iframe loads
-        const iframe = this.elements.pdfPreview.querySelector('iframe');
-        iframe.onload = () => URL.revokeObjectURL(fileURL);
-      }
-
-      disableInterface() {
-        // Disable all interactive elements
-        const elements = document.querySelectorAll('button, input, select');
-        elements.forEach(element => element.disabled = true);
-        
-        // Remove event listeners from question grid
-        const questionButtons = this.elements.questionGrid.querySelectorAll('button');
-        questionButtons.forEach(button => {
-          button.replaceWith(button.cloneNode(true));
-        });
-        
-        // Stop timer
-        this.pauseTimer();
-        clearInterval(this.timerInterval);
-      }
-
-      addQuestion() {
-        if (!this.allowCustomEdit) return;
-        
-        this.totalQuestions++;
-        this.updateQuestionGrid();
-      }
-    }
-
-    // Initialize the exam interface when the DOM is fully loaded
-    document.addEventListener('DOMContentLoaded', () => {
-      const examInterface = new ExamInterface();
-    });
-  </script>
+  <script src="script.js"></script> <!-- Link to external JavaScript -->
 </body>
 </html>
